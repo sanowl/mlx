@@ -1,3 +1,4 @@
 sphinx
 breathe
 sphinx-book-theme
+security==1.2.1

@@ -6,6 +6,7 @@ import argparse
 import re
 from pathlib import Path
 from subprocess import run
+from security import safe_command
 
 BENCH_MLX = Path(__file__).parent / "bench_mlx.py"
 BENCH_TORCH = Path(__file__).parent / "bench_torch.py"
@@ -13,7 +14,7 @@ BENCH_TORCH = Path(__file__).parent / "bench_torch.py"
 
 def run_or_raise(*args, **kwargs):
     try:
-        result = run(*args, capture_output=True, **kwargs)
+        result = safe_command.run(run, *args, capture_output=True, **kwargs)
         return float(result.stdout)
     except ValueError:
         raise ValueError(
