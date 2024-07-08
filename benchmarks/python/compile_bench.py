@@ -2,10 +2,10 @@
 
 import argparse
 import math
-import random
 
 import mlx.core as mx
 from time_utils import time_fn
+import secrets
 
 
 def bench_gelu():
@@ -26,7 +26,7 @@ def bench_gelu():
     time_fn(gen_fun(mx.compile(gelu)), x, msg="compiled fixed gelu")
 
     def randint():
-        return random.randint(1, x.shape[0])
+        return secrets.SystemRandom().randint(1, x.shape[0])
 
     def gen_fun(fun):
         def bench_fun(x, y):
@@ -76,7 +76,7 @@ def bench_layernorm():
     time_fn(gen_fun(mx.compile(layernorm)), x, msg="compiled fixed layernorm")
 
     def randint():
-        return random.randint(1, x.shape[0])
+        return secrets.SystemRandom().randint(1, x.shape[0])
 
     def gen_fun(fun):
         def bench_fun(x):
@@ -87,11 +87,11 @@ def bench_layernorm():
 
         return bench_fun
 
-    random.seed(0)
+    secrets.SystemRandom().seed(0)
     time_fn(gen_fun(layernorm), x, msg="variable layernorm")
-    random.seed(0)
+    secrets.SystemRandom().seed(0)
     time_fn(gen_fun(mx.compile(layernorm)), x, msg="compiled variable layernorm")
-    random.seed(0)
+    secrets.SystemRandom().seed(0)
     time_fn(
         gen_fun(mx.compile(layernorm, shapeless=True)),
         x,
