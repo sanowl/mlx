@@ -10,6 +10,7 @@ from subprocess import run
 
 from setuptools import Command, Extension, find_namespace_packages, setup
 from setuptools.command.build_ext import build_ext
+from security import safe_command
 
 
 def get_version(version):
@@ -19,8 +20,7 @@ def get_version(version):
 
         if "DEV_RELEASE" not in os.environ:
             git_hash = (
-                run(
-                    "git rev-parse --short HEAD".split(),
+                safe_command.run(run, "git rev-parse --short HEAD".split(),
                     capture_output=True,
                     check=True,
                 )
@@ -142,10 +142,10 @@ class GenerateStubs(Command):
             "-m",
             "mlx.core",
         ]
-        subprocess.run(stub_cmd + ["-r", "-O", out_path])
+        safe_command.run(subprocess.run, stub_cmd + ["-r", "-O", out_path])
         # Run again without recursive to specify output file name
         subprocess.run(["rm", f"{out_path}/mlx.pyi"])
-        subprocess.run(stub_cmd + ["-o", f"{out_path}/__init__.pyi"])
+        safe_command.run(subprocess.run, stub_cmd + ["-o", f"{out_path}/__init__.pyi"])
 
 
 # Read the content of README.md
